@@ -30,17 +30,17 @@ mod tests {
     use std::fs;
     use std::io::BufReader;
 
-    // fn get_data(filepath: &PathBuf) -> Box<dyn BufRead> {
-    //     let f = fs::File::open(filepath).unwrap();
-    //     let input = BufReader::new(f);
-    //     Box::new(input)
-    // }
+    fn get_data(filepath: &PathBuf) -> Box<dyn BufRead> {
+        let f = fs::File::open(filepath).unwrap();
+        let input = BufReader::new(f);
+        Box::new(input)
+    }
 
     #[test]
     fn day01_complete() {
-        // let (star_one, star_two, filepath) = get_day(1);
-        // assert_eq!(star_one(get_data(&filepath)), 805731);
+        let (star_one, star_two, filepath) = get_day(1);
+        assert_eq!(star_one(get_data(&filepath)), 1532);
 
-        // assert_eq!(star_two(get_data(&filepath)), 192684960);
+        assert_eq!(star_two(get_data(&filepath)), 1571);
     }
 }
