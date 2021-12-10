@@ -77,7 +77,6 @@ fn get_size(visited: &mut Vec<Vec<bool>>, i: usize, j: usize) -> usize {
 }
 
 pub fn star_two(input: impl BufRead) -> usize {
-
     let data: Vec<Vec<u32>> = input
         .lines()
         .map(|l| {
