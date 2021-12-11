@@ -3,7 +3,7 @@ use std::fs;
 
 use std::io::BufReader;
 
-use advent_of_code_2020::*;
+use advent_of_code_2021::*;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();

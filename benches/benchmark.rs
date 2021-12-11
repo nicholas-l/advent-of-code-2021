@@ -1,4 +1,4 @@
-use advent_of_code_2020::{get_day, get_days};
+use advent_of_code_2021::{get_day, get_days};
 use criterion::{criterion_group, criterion_main, Criterion};
 
 fn criterion_benchmark(c: &mut Criterion) {

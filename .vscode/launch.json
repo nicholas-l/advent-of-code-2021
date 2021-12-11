@@ -7,16 +7,16 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug unit tests in library 'advent-of-code-2020'",
+      "name": "Debug unit tests in library 'advent-of-code-2021'",
       "cargo": {
         "args": [
           "test",
           "--no-run",
           "--lib",
-          "--package=advent-of-code-2020"
+          "--package=advent-of-code-2021"
         ],
         "filter": {
-          "name": "advent-of-code-2020",
+          "name": "advent-of-code-2021",
           "kind": "lib"
         }
       },
@@ -31,7 +31,7 @@
         "args": [
           "build",
           "--bin=main",
-          "--package=advent-of-code-2020"
+          "--package=advent-of-code-2021"
         ],
         "filter": {
           "name": "main",
@@ -50,7 +50,7 @@
           "test",
           "--no-run",
           "--bin=main",
-          "--package=advent-of-code-2020"
+          "--package=advent-of-code-2021"
         ],
         "filter": {
           "name": "main",
