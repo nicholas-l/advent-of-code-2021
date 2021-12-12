@@ -14,6 +14,7 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 
 type DayFn = fn(Box<dyn BufRead>) -> usize;
 
@@ -118,6 +119,15 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
             )
         }
 
+        12 => {
+            use day12::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day12.txt"),
+            )
+        }
+
         x => {
             unimplemented!("Have not implemented day {}", x);
         }
@@ -125,7 +135,7 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
 }
 
 pub fn get_days() -> impl Iterator<Item = usize> {
-    1..=11
+    1..=12
 }
 
 #[cfg(test)]
@@ -226,5 +236,13 @@ mod tests {
         assert_eq!(star_one(get_data(&filepath)), 1729);
 
         assert_eq!(star_two(get_data(&filepath)), 237);
+    }
+
+    #[test]
+    fn day12_complete() {
+        let (star_one, star_two, filepath) = get_day(12);
+        assert_eq!(star_one(get_data(&filepath)), 4378);
+
+        assert_eq!(star_two(get_data(&filepath)), 133621);
     }
 }
