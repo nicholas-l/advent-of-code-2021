@@ -7,8 +7,8 @@ use std::{
 enum Node {
     Start,
     End,
-    LowerNode(String),
-    UpperNode(String),
+    Lower(usize),
+    Upper(usize),
 }
 
 fn is_all_lowercase(s: &str) -> bool {
@@ -54,6 +54,8 @@ pub fn star_one(input: impl BufRead) -> usize {
 }
 
 pub fn star_two(input: impl BufRead) -> usize {
+    let mut keys = HashMap::new();
+
     let graph = input
         .lines()
         .map(|line| {
@@ -65,16 +67,33 @@ pub fn star_two(input: impl BufRead) -> usize {
             let n1 = match v.0.as_str() {
                 "start" => Node::Start,
                 "end" => Node::End,
-                s if is_all_lowercase(s) => Node::LowerNode(v.0),
-                s => Node::UpperNode(v.0),
-                _ => panic!(),
+                s if is_all_lowercase(s) => {
+                    let len = keys.len() + 1;
+                    let key1 = *keys.entry(v.0).or_insert(len);
+                    Node::Lower(key1)
+                }
+                _ => {
+                    let len = keys.len() + 1;
+                    let key1 = *keys.entry(v.0).or_insert(len);
+                    Node::Upper(key1)
+                }
             };
+
             let n2 = match v.1.as_str() {
                 "start" => Node::Start,
                 "end" => Node::End,
-                s if is_all_lowercase(s) => Node::LowerNode(v.1),
-                s => Node::UpperNode(v.1),
-                _ => panic!(),
+                s if is_all_lowercase(s) => {
+                    let len = keys.len() + 1;
+
+                    let key2 = *keys.entry(v.1).or_insert(len);
+                    Node::Lower(key2)
+                }
+                _ => {
+                    let len = keys.len() + 1;
+
+                    let key2 = *keys.entry(v.1).or_insert(len);
+                    Node::Upper(key2)
+                }
             };
             (n1, n2)
         })
@@ -86,7 +105,7 @@ pub fn star_two(input: impl BufRead) -> usize {
             hm
         });
 
-    let small_caves = graph.keys().filter(|n| matches!(n, Node::LowerNode(_)));
+    let small_caves = graph.keys().filter(|n| matches!(n, Node::Lower(_)));
 
     let mut stack: Vec<(_, _, _, _)> = small_caves
         .map(|cave| (Node::Start, Vec::new(), cave, HashMap::new()))
@@ -113,7 +132,7 @@ pub fn star_two(input: impl BufRead) -> usize {
                 path.push(Node::End);
                 paths.insert(path);
             }
-            Node::LowerNode(_) => {
+            Node::Lower(_) => {
                 let max_count = if twice_small == &node { 2 } else { 1 };
                 if visit_count.get(&node).unwrap_or(&0) < &max_count {
                     path.push(node.clone());
@@ -128,7 +147,7 @@ pub fn star_two(input: impl BufRead) -> usize {
                     }));
                 }
             }
-            Node::UpperNode(_) => {
+            Node::Upper(_) => {
                 path.push(node.clone());
                 stack.extend(graph.get(&node).unwrap().iter().map(|node| {
                     (
