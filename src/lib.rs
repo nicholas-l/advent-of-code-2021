@@ -1,7 +1,6 @@
-#![feature(linked_list_cursors)]
-
 use std::{
-    io::BufRead,
+    fs,
+    io::{BufRead, BufReader},
     path::{Path, PathBuf},
 };
 
@@ -160,17 +159,15 @@ pub fn get_days() -> impl Iterator<Item = usize> {
     1..=14
 }
 
+pub fn get_data(filepath: &PathBuf) -> Box<dyn BufRead> {
+    let f = fs::File::open(filepath).unwrap();
+    let input = BufReader::new(f);
+    Box::new(input)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
-    use std::io::BufReader;
-
-    fn get_data(filepath: &PathBuf) -> Box<dyn BufRead> {
-        let f = fs::File::open(filepath).unwrap();
-        let input = BufReader::new(f);
-        Box::new(input)
-    }
 
     #[test]
     fn day01_complete() {
@@ -281,6 +278,6 @@ mod tests {
         let (star_one, star_two, filepath) = get_day(14);
         assert_eq!(star_one(get_data(&filepath)), 2408);
 
-        assert_eq!(star_two(get_data(&filepath)), 101);
+        assert_eq!(star_two(get_data(&filepath)), 2651311098752);
     }
 }
