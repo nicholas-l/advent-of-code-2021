@@ -27,7 +27,7 @@ fn star(mut input: impl BufRead, iterations: usize) -> usize {
             .chars()
             .tuple_windows()
             .fold(HashMap::new(), |mut hm, (c1, c2)| {
-                *hm.entry((c1, c2)).or_insert(0) += 1 as u128;
+                *hm.entry((c1, c2)).or_insert(0) += 1_u128;
                 hm
             });
 

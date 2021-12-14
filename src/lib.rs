@@ -159,7 +159,7 @@ pub fn get_days() -> impl Iterator<Item = usize> {
     1..=14
 }
 
-pub fn get_data(filepath: &PathBuf) -> Box<dyn BufRead> {
+pub fn get_data(filepath: &Path) -> Box<dyn BufRead> {
     let f = fs::File::open(filepath).unwrap();
     let input = BufReader::new(f);
     Box::new(input)
