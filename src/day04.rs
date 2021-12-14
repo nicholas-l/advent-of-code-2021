@@ -43,6 +43,7 @@ impl Board {
     }
 }
 
+#[allow(dead_code)]
 fn print(board: &Board) {
     for row in &board.0 {
         println!("{:?}", row);
@@ -103,7 +104,7 @@ pub fn star_one(mut input: impl BufRead) -> usize {
 
     let (winning_board, number) = get_winning_board(boards, t);
 
-    dbg!(&winning_board);
+    // dbg!(&winning_board);
 
     number
         * winning_board
@@ -135,8 +136,8 @@ pub fn star_two(mut input: impl BufRead) -> usize {
 
     let (winning_board, number) = get_least_winning(boards, t);
 
-    print(&winning_board);
-    dbg!(number);
+    // print(&winning_board);
+    // dbg!(number);
 
     number
         * winning_board

@@ -115,12 +115,15 @@ pub fn star_two(mut input: impl BufRead) -> usize {
     let max_0 = data.iter().max_by_key(|k| k.0).unwrap().0;
     let max_1 = data.iter().max_by_key(|k| k.1).unwrap().1;
 
-    for k in 0..=max_1 {
-        for i in 0..=max_0 {
-            let c = if data.contains(&(i, k)) { '#' } else { '.' };
-            print!("{}", c);
+    let should_print = false;
+    if should_print {
+        for k in 0..=max_1 {
+            for i in 0..=max_0 {
+                let c = if data.contains(&(i, k)) { '#' } else { '.' };
+                print!("{}", c);
+            }
+            println!();
         }
-        println!();
     }
 
     data.len()
