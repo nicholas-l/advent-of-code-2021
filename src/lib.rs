@@ -1,3 +1,5 @@
+#![feature(linked_list_cursors)]
+
 use std::{
     io::BufRead,
     path::{Path, PathBuf},
@@ -16,6 +18,7 @@ mod day10;
 mod day11;
 mod day12;
 mod day13;
+mod day14;
 
 type DayFn = fn(Box<dyn BufRead>) -> usize;
 
@@ -138,6 +141,15 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
             )
         }
 
+        14 => {
+            use day14::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day14.txt"),
+            )
+        }
+
         x => {
             unimplemented!("Have not implemented day {}", x);
         }
@@ -145,7 +157,7 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
 }
 
 pub fn get_days() -> impl Iterator<Item = usize> {
-    1..=13
+    1..=14
 }
 
 #[cfg(test)]
@@ -260,6 +272,14 @@ mod tests {
     fn day13_complete() {
         let (star_one, star_two, filepath) = get_day(13);
         assert_eq!(star_one(get_data(&filepath)), 818);
+
+        assert_eq!(star_two(get_data(&filepath)), 101);
+    }
+
+    #[test]
+    fn day14_complete() {
+        let (star_one, star_two, filepath) = get_day(14);
+        assert_eq!(star_one(get_data(&filepath)), 2408);
 
         assert_eq!(star_two(get_data(&filepath)), 101);
     }
