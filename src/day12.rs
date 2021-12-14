@@ -3,6 +3,14 @@ use std::{
     io::BufRead,
 };
 
+#[derive(Debug, Hash, PartialEq, Eq, Clone)]
+enum Node {
+    Start,
+    End,
+    LowerNode(String),
+    UpperNode(String),
+}
+
 fn is_all_lowercase(s: &str) -> bool {
     s.chars().all(|c| c.is_ascii_lowercase())
 }
@@ -53,6 +61,23 @@ pub fn star_two(input: impl BufRead) -> usize {
             let (node1, node2) = line.split_once('-').unwrap();
             (node1.to_owned(), node2.to_owned())
         })
+        .map(|v| {
+            let n1 = match v.0.as_str() {
+                "start" => Node::Start,
+                "end" => Node::End,
+                s if is_all_lowercase(s) => Node::LowerNode(v.0),
+                s => Node::UpperNode(v.0),
+                _ => panic!(),
+            };
+            let n2 = match v.1.as_str() {
+                "start" => Node::Start,
+                "end" => Node::End,
+                s if is_all_lowercase(s) => Node::LowerNode(v.1),
+                s => Node::UpperNode(v.1),
+                _ => panic!(),
+            };
+            (n1, n2)
+        })
         .fold(HashMap::new(), |mut hm, (n1, n2)| {
             hm.entry(n1.clone())
                 .or_insert_with(Vec::new)
@@ -61,41 +86,59 @@ pub fn star_two(input: impl BufRead) -> usize {
             hm
         });
 
-    let small_caves = graph.keys().filter(|s| is_all_lowercase(s));
+    let small_caves = graph.keys().filter(|n| matches!(n, Node::LowerNode(_)));
 
-    let mut stack: Vec<(_, _, _)> = small_caves
-        .map(|cave| ("start".to_owned(), Vec::new(), cave))
+    let mut stack: Vec<(_, _, _, _)> = small_caves
+        .map(|cave| (Node::Start, Vec::new(), cave, HashMap::new()))
         .collect();
 
     let mut paths = HashSet::new();
 
-    while let Some((node, mut path, twice_small)) = stack.pop() {
-        let max_count = if twice_small == &node { 2 } else { 1 };
-        if node == "end" {
-            path.push("end".to_owned());
-            paths.insert(path);
-        } else if node == "start" {
-            if path.is_empty() {
-                path.push(node.clone());
-                stack.extend(
-                    graph
-                        .get(&node)
-                        .unwrap()
-                        .iter()
-                        .map(|node| (node.to_owned(), path.clone(), twice_small)),
-                );
+    while let Some((node, mut path, twice_small, mut visit_count)) = stack.pop() {
+        match node {
+            Node::Start => {
+                if path.is_empty() {
+                    path.push(node.clone());
+                    stack.extend(graph.get(&node).unwrap().iter().map(|node| {
+                        (
+                            node.to_owned(),
+                            path.clone(),
+                            twice_small,
+                            visit_count.clone(),
+                        )
+                    }));
+                }
             }
-        } else if !is_all_lowercase(&node)
-            || path.iter().filter(|p| p == &&node).count() < max_count
-        {
-            path.push(node.clone());
-            stack.extend(
-                graph
-                    .get(&node)
-                    .unwrap()
-                    .iter()
-                    .map(|node| (node.to_owned(), path.clone(), twice_small)),
-            );
+            Node::End => {
+                path.push(Node::End);
+                paths.insert(path);
+            }
+            Node::LowerNode(_) => {
+                let max_count = if twice_small == &node { 2 } else { 1 };
+                if visit_count.get(&node).unwrap_or(&0) < &max_count {
+                    path.push(node.clone());
+                    *visit_count.entry(node.clone()).or_insert(0) += 1;
+                    stack.extend(graph.get(&node).unwrap().iter().map(|node| {
+                        (
+                            node.to_owned(),
+                            path.clone(),
+                            twice_small,
+                            visit_count.clone(),
+                        )
+                    }));
+                }
+            }
+            Node::UpperNode(_) => {
+                path.push(node.clone());
+                stack.extend(graph.get(&node).unwrap().iter().map(|node| {
+                    (
+                        node.to_owned(),
+                        path.clone(),
+                        twice_small,
+                        visit_count.clone(),
+                    )
+                }));
+            }
         }
     }
     paths.len()
