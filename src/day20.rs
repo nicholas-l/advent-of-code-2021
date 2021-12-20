@@ -74,17 +74,17 @@ fn enhance(image: &mut Image, iep: &[char], flips: bool, should_print: bool) {
                     }
                 )
             }
-            println!("");
+            println!();
         }
     }
 }
 
-pub fn star_one(mut input: impl BufRead) -> usize {
+fn star(mut input: impl BufRead, iterations: usize) -> usize {
     let mut buf = String::new();
     input.read_to_string(&mut buf).unwrap();
     let mut sections = buf.split("\n\n");
 
-    let original_iep: Vec<_> = sections
+    let iep: Vec<_> = sections
         .next()
         .unwrap()
         .chars()
@@ -111,62 +111,22 @@ pub fn star_one(mut input: impl BufRead) -> usize {
             .collect(),
     };
 
-    // if 0 is # then invert
+    // If the IEP flips the infinite part of the image then we will flip what we are storing.
+    let flips = iep[0] == '#' && iep[511] == '.';
 
-    let iep = original_iep.clone();
-
-    let flips = dbg!(iep[0] == '#' && iep[511] == '.');
-
-    for _i in 0..2 {
+    for _i in 0..iterations {
         enhance(&mut image, &iep, flips, false);
     }
 
     image.values.len()
 }
 
-pub fn star_two(mut input: impl BufRead) -> usize {
-    let mut buf = String::new();
-    input.read_to_string(&mut buf).unwrap();
-    let mut sections = buf.split("\n\n");
+pub fn star_one(input: impl BufRead) -> usize {
+    star(input, 2)
+}
 
-    let original_iep: Vec<_> = sections
-        .next()
-        .unwrap()
-        .chars()
-        .filter(|c| c != &'\n')
-        .collect();
-
-    let mut image = Image {
-        is_light: true,
-        values: sections
-            .next()
-            .unwrap()
-            .lines()
-            .enumerate()
-            .flat_map(|(row, line)| {
-                line.chars()
-                    .enumerate()
-                    .filter(|(_col, c)| match c {
-                        '#' => true,
-                        '.' => false,
-                        x => panic!("{}", x),
-                    })
-                    .map(move |(col, _c)| (row as isize, col as isize))
-            })
-            .collect(),
-    };
-
-    // if 0 is # then invert
-
-    let iep = original_iep.clone();
-
-    let flips = dbg!(iep[0] == '#' && iep[511] == '.');
-
-    for _i in 0..50 {
-        enhance(&mut image, &iep, flips, false);
-    }
-
-    image.values.len()
+pub fn star_two(input: impl BufRead) -> usize {
+    star(input, 50)
 }
 
 #[cfg(test)]
