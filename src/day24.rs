@@ -1,12 +1,7 @@
 use rayon::prelude::*;
 use std::{collections::HashMap, io::BufRead};
 
-use lazy_static::lazy_static; // 1.4.0
-use std::sync::Mutex;
-
-lazy_static! {
-    static ref CACHE: Mutex<Option<Vec<(Alu, (usize, usize))>>> = Mutex::new(None);
-}
+use once_cell::sync::OnceCell;
 
 enum Value {
     Var(char),
@@ -111,59 +106,61 @@ impl Alu {
 }
 
 fn cached_run(input: impl BufRead) -> Vec<(Alu, (usize, usize))> {
-    let mut lock = CACHE.lock().unwrap();
-    if let Some(x) = &*lock {
-        return x.clone();
-    }
+    static INSTANCE: OnceCell<Vec<(Alu, (usize, usize))>> = OnceCell::new();
+    println!("balh1");
     let instructions = Alu::parse_instructions(input);
+    INSTANCE
+        .get_or_init(|| {
 
-    let computer: Alu = Alu::new();
-    // A list of computers with their previous input (in base 10).
-    let mut computers = vec![(computer, (0usize, 0usize))];
+            let computer: Alu = Alu::new();
+            // A list of computers with their previous input (in base 10).
+            let mut computers = vec![(computer, (0usize, 0usize))];
 
-    let mut inputs_seen = 0;
+            let mut inputs_seen = 0;
+            println!("balh2, {}", instructions.len());
 
-    for instruction in &instructions {
-        match instruction {
-            Instruction::Input(c) => {
-                // We have seen an input instruction so lets branch out the combinations of
-                // computers
-                computers = computers
-                    .into_iter()
-                    .fold(
-                        HashMap::new(),
-                        |mut computers: HashMap<Alu, (usize, usize)>,
-                         (computer, (previous_min, previous_max))| {
-                            for input in 1..=9 {
-                                let mut new_computer = computer.clone();
-                                new_computer.set_memory(*c, input);
-                                let new_min = previous_min * 10 + input as usize;
-                                let new_max = previous_max * 10 + input as usize;
+            for instruction in &instructions {
+                match instruction {
+                    Instruction::Input(c) => {
+                        // We have seen an input instruction so lets branch out the combinations of
+                        // computers
+                        computers = computers
+                        .into_iter()
+                        .fold(
+                            HashMap::new(),
+                            |mut computers: HashMap<Alu, (usize, usize)>,
+                             (computer, (previous_min, previous_max))| {
+                                for input in 1..=9 {
+                                    let mut new_computer = computer.clone();
+                                    new_computer.set_memory(*c, input);
+                                    let new_min = previous_min * 10 + input as usize;
+                                    let new_max = previous_max * 10 + input as usize;
 
+                                    computers
+                                        .entry(new_computer)
+                                        .and_modify(|e| {
+                                            *e = (e.0.min(new_min), e.1.max(new_max));
+                                        })
+                                        .or_insert((new_min, new_max));
+                                }
                                 computers
-                                    .entry(new_computer)
-                                    .and_modify(|e| {
-                                        *e = (e.0.min(new_min), e.1.max(new_max));
-                                    })
-                                    .or_insert((new_min, new_max));
-                            }
-                            computers
-                        },
-                    )
-                    .into_iter()
-                    .collect();
-                inputs_seen += 1;
-                println!("({}): {} computers.", inputs_seen, computers.len());
+                            },
+                        )
+                        .into_iter()
+                        .collect();
+                        inputs_seen += 1;
+                        println!("({}): {} computers.", inputs_seen, computers.len());
+                    }
+                    instruction => {
+                        computers.par_iter_mut().for_each(|computer| {
+                            computer.0.operation(instruction);
+                        });
+                    }
+                }
             }
-            instruction => {
-                computers.par_iter_mut().for_each(|computer| {
-                    computer.0.operation(instruction);
-                });
-            }
-        }
-    }
-    lock.replace(computers.clone());
-    computers
+            computers
+        })
+        .clone()
 }
 
 pub fn star_one(input: impl BufRead) -> usize {
