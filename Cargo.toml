@@ -9,6 +9,7 @@ edition = "2021"
 [dependencies]
 itertools = "0.10.0"
 nom = "7.1.0"
+rayon = "1.5.1"
 # regex = "1.4.2"
 # lazy_static = "1.4.0"
 # slab = "0.4.3"
