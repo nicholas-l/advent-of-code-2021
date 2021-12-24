@@ -1,5 +1,12 @@
-use std::{collections::HashMap, io::BufRead};
 use rayon::prelude::*;
+use std::{collections::HashMap, io::BufRead};
+
+use lazy_static::lazy_static; // 1.4.0
+use std::sync::Mutex;
+
+lazy_static! {
+    static ref CACHE: Mutex<Option<Vec<(Alu, (usize, usize))>>> = Mutex::new(None);
+}
 
 enum Value {
     Var(char),
@@ -103,12 +110,16 @@ impl Alu {
     }
 }
 
-pub fn star_one(input: impl BufRead) -> usize {
+fn cached_run(input: impl BufRead) -> Vec<(Alu, (usize, usize))> {
+    let mut lock = CACHE.lock().unwrap();
+    if let Some(x) = &*lock {
+        return x.clone();
+    }
     let instructions = Alu::parse_instructions(input);
 
     let computer: Alu = Alu::new();
     // A list of computers with their previous input (in base 10).
-    let mut computers = vec![(computer, 0_usize)];
+    let mut computers = vec![(computer, (0usize, 0usize))];
 
     let mut inputs_seen = 0;
 
@@ -121,15 +132,20 @@ pub fn star_one(input: impl BufRead) -> usize {
                     .into_iter()
                     .fold(
                         HashMap::new(),
-                        |mut computers: HashMap<Alu, usize>, (computer, previous_input)| {
+                        |mut computers: HashMap<Alu, (usize, usize)>,
+                         (computer, (previous_min, previous_max))| {
                             for input in 1..=9 {
                                 let mut new_computer = computer.clone();
                                 new_computer.set_memory(*c, input);
-                                let mut new_input = previous_input * 10 + input as usize;
+                                let new_min = previous_min * 10 + input as usize;
+                                let new_max = previous_max * 10 + input as usize;
+
                                 computers
                                     .entry(new_computer)
-                                    .and_modify(|e| *e = *e.max(&mut new_input))
-                                    .or_insert(new_input);
+                                    .and_modify(|e| {
+                                        *e = (e.0.min(new_min), e.1.max(new_max));
+                                    })
+                                    .or_insert((new_min, new_max));
                             }
                             computers
                         },
@@ -146,16 +162,30 @@ pub fn star_one(input: impl BufRead) -> usize {
             }
         }
     }
+    lock.replace(computers.clone());
+    computers
+}
+
+pub fn star_one(input: impl BufRead) -> usize {
+    let computers = cached_run(input);
     computers
         .into_iter()
         .filter(|(computer, _x)| computer.memory[3] == 0)
-        .max_by_key(|(_computer, input)| *input)
+        .max_by_key(|(_computer, input)| input.1)
         .unwrap()
         .1
+         .1
 }
 
-pub fn star_two(_input: impl BufRead) -> usize {
-    todo!()
+pub fn star_two(input: impl BufRead) -> usize {
+    let computers = cached_run(input);
+    computers
+        .into_iter()
+        .filter(|(computer, _x)| computer.memory[3] == 0)
+        .min_by_key(|(_computer, input)| input.0)
+        .unwrap()
+        .1
+         .0
 }
 
 #[cfg(test)]
