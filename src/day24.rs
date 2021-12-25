@@ -111,7 +111,6 @@ fn cached_run(input: impl BufRead) -> Vec<(Alu, (usize, usize))> {
     let instructions = Alu::parse_instructions(input);
     INSTANCE
         .get_or_init(|| {
-
             let computer: Alu = Alu::new();
             // A list of computers with their previous input (in base 10).
             let mut computers = vec![(computer, (0usize, 0usize))];
