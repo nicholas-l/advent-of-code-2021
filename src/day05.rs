@@ -7,7 +7,7 @@ fn parse_input(input: impl BufRead) -> impl Iterator<Item = (Point, Point)> {
         let l = l.unwrap();
         let (s, e) = l.split_once("->").unwrap();
         let start = {
-            let (x, y) = s.split_once(",").unwrap();
+            let (x, y) = s.split_once(',').unwrap();
             (
                 x.trim().parse::<usize>().unwrap(),
                 y.trim()
@@ -16,7 +16,7 @@ fn parse_input(input: impl BufRead) -> impl Iterator<Item = (Point, Point)> {
             )
         };
         let end = {
-            let (x, y) = e.split_once(",").unwrap();
+            let (x, y) = e.split_once(',').unwrap();
             (
                 x.trim().parse::<usize>().unwrap(),
                 y.trim().parse::<usize>().unwrap(),
