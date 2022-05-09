@@ -45,7 +45,7 @@ pub fn star_one(input: impl BufRead) -> usize {
         .sum()
 }
 
-fn get_size(visited: &mut Vec<Vec<bool>>, i: usize, j: usize) -> usize {
+fn get_size(visited: &mut [Vec<bool>], i: usize, j: usize) -> usize {
     // Flood fill
 
     let mut total = 0;

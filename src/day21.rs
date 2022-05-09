@@ -26,7 +26,7 @@ pub fn star_one(mut input: impl BufRead) -> usize {
         let value = dice + dice + 1 + dice + 2;
         if turn {
             pos1 += value;
-            pos1 = pos1 % 10;
+            pos1 %= 10;
             score1 += pos1 + 1;
         } else {
             pos2 += value;
@@ -45,12 +45,6 @@ struct Player {
     score: usize,
 }
 
-impl Player {
-    fn move_position(&mut self, _distance: usize) {
-        todo!()
-    }
-}
-
 fn play(
     player1: Player,
     player2: Player,
@@ -59,11 +53,11 @@ fn play(
 ) -> (usize, usize) {
     let max_score = 20;
     if player1.score > max_score {
-        return (1, 0);
+        (1, 0)
     } else if player2.score > max_score {
-        return (0, 1);
+        (0, 1)
     } else if let Some(winners) = cache.get(&(player1.clone(), player2.clone(), turn)) {
-        return winners.clone();
+        *winners
     } else {
         let res = [1, 2, 3]
             .iter()
@@ -81,7 +75,7 @@ fn play(
                     player2.position = (player2.position + value - 1) % 10 + 1;
                     player2.score += player2.position;
                 }
-                return play(player1, player2, !turn, cache);
+                play(player1, player2, !turn, cache)
             })
             .fold((0, 0), |acc, (p1, p2)| (acc.0 + p1, acc.1 + p2));
         cache.insert((player1, player2, turn), res);
