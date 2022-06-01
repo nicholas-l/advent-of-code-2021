@@ -10,7 +10,7 @@ impl FromStr for Operation {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (op, x) = s.split_once(" ").unwrap();
+        let (op, x) = s.split_once(' ').unwrap();
         match op {
             "forward" => Ok(Operation::Forward(x.parse::<i32>().unwrap())),
             "up" => Ok(Operation::Up(x.parse::<i32>().unwrap())),

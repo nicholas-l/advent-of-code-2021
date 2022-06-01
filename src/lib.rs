@@ -22,8 +22,12 @@ mod day15;
 mod day16;
 mod day17;
 mod day18;
+mod day19;
 mod day20;
+mod day21;
 mod day22;
+mod day24;
+mod day25;
 
 type DayFn = fn(Box<dyn BufRead>) -> usize;
 
@@ -191,12 +195,30 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
             )
         }
 
+        19 => {
+            use day19::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day19.txt"),
+            )
+        }
+
         20 => {
             use day20::{star_one, star_two};
             (
                 star_one as DayFn,
                 star_two as DayFn,
                 Path::new("data").join("day20.txt"),
+            )
+        }
+
+        21 => {
+            use day21::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day21.txt"),
             )
         }
 
@@ -209,6 +231,24 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
             )
         }
 
+        24 => {
+            use day24::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day24.txt"),
+            )
+        }
+
+        25 => {
+            use day25::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day25.txt"),
+            )
+        }
+
         x => {
             unimplemented!("Have not implemented day {}", x);
         }
@@ -216,7 +256,7 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
 }
 
 pub fn get_days() -> impl Iterator<Item = usize> {
-    1..=18
+    1..=21
 }
 
 pub fn get_data(filepath: &Path) -> Box<dyn BufRead> {
@@ -374,6 +414,14 @@ mod tests {
     }
 
     #[test]
+    fn day19_complete() {
+        let (star_one, star_two, filepath) = get_day(19);
+        assert_eq!(star_one(get_data(&filepath)), 414);
+
+        assert_eq!(star_two(get_data(&filepath)), 13000);
+    }
+
+    #[test]
     fn day20_complete() {
         let (star_one, star_two, filepath) = get_day(20);
         assert_eq!(star_one(get_data(&filepath)), 5419);
@@ -382,10 +430,34 @@ mod tests {
     }
 
     #[test]
+    fn day21_complete() {
+        let (star_one, star_two, filepath) = get_day(21);
+        assert_eq!(star_one(get_data(&filepath)), 893700);
+
+        assert_eq!(star_two(get_data(&filepath)), 568867175661958);
+    }
+
     fn day22_complete() {
         let (star_one, star_two, filepath) = get_day(22);
         assert_eq!(star_one(get_data(&filepath)), 587097);
 
         assert_eq!(star_two(get_data(&filepath)), 17325);
+    }
+
+    #[test]
+    #[ignore = "Takes too long"]
+    fn day24_complete() {
+        let (star_one, star_two, filepath) = get_day(24);
+        assert_eq!(star_one(get_data(&filepath)), 79197919993985);
+
+        assert_eq!(star_two(get_data(&filepath)), 13191913571211);
+    }
+
+    #[test]
+    fn day25_complete() {
+        let (star_one, star_two, filepath) = get_day(25);
+        assert_eq!(star_one(get_data(&filepath)), 374);
+
+        assert_eq!(star_two(get_data(&filepath)), 0);
     }
 }
