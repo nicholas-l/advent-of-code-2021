@@ -80,8 +80,8 @@ pub fn star_two(input: impl BufRead) -> usize {
         })
         .map(|(ins, cuboid)| {
           let hs: HashSet<(isize, isize, isize)> = ((cuboid.0).0..=cuboid.0 .1).flat_map(|x| {
-            (cuboid.1 .0..=cuboid.1 .1).flat_map(move |y| 
-                (cuboid.2 .0..=cuboid.2 .1).map(move |z| 
+            (cuboid.1 .0..=cuboid.1 .1).flat_map(move |y|
+                (cuboid.2 .0..=cuboid.2 .1).map(move |z|
                   (x,y,z)
                 )
               )
