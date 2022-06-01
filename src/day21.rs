@@ -1,6 +1,6 @@
-use std::{collections::HashMap, io::BufRead};
+use std::io::BufRead;
 
-use itertools::Itertools;
+use cached::proc_macro::cached;
 
 pub fn star_one(mut input: impl BufRead) -> usize {
     let mut data = String::new();
@@ -45,41 +45,32 @@ struct Player {
     score: usize,
 }
 
-fn play(
-    player1: Player,
-    player2: Player,
-    turn: bool,
-    cache: &mut HashMap<(Player, Player, bool), (usize, usize)>,
-) -> (usize, usize) {
+#[cached]
+fn play(player1: Player, player2: Player, turn: bool) -> (usize, usize) {
     let max_score = 20;
     if player1.score > max_score {
         (1, 0)
     } else if player2.score > max_score {
         (0, 1)
-    } else if let Some(winners) = cache.get(&(player1.clone(), player2.clone(), turn)) {
-        *winners
     } else {
-        let res = [1, 2, 3]
-            .iter()
-            .combinations_with_replacement(3)
-            .map(|dice| dice.into_iter().sum::<usize>())
-            .map(|value| {
+        [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)]
+            .into_iter()
+            .map(|(roll_sum, times)| {
                 // println!("{} {} {:?}", player1.score, player2.score, dice);
                 let mut player1 = player1.clone();
                 let mut player2 = player2.clone();
 
                 if turn {
-                    player1.position = (player1.position + value - 1) % 10 + 1;
-                    player1.score += player1.position;
+                    player1.position = (player1.position + roll_sum) % 10;
+                    player1.score += player1.position + 1;
                 } else {
-                    player2.position = (player2.position + value - 1) % 10 + 1;
-                    player2.score += player2.position;
+                    player2.position = (player2.position + roll_sum) % 10;
+                    player2.score += player2.position + 1;
                 }
-                play(player1, player2, !turn, cache)
+                let res = play(player1, player2, !turn);
+                (res.0 * times, res.1 * times)
             })
-            .fold((0, 0), |acc, (p1, p2)| (acc.0 + p1, acc.1 + p2));
-        cache.insert((player1, player2, turn), res);
-        res
+            .fold((0, 0), |acc, (p1, p2)| (acc.0 + p1, acc.1 + p2))
     }
 }
 
@@ -96,21 +87,19 @@ pub fn star_two(mut input: impl BufRead) -> usize {
     };
 
     let player1 = Player {
-        position: pos1,
+        position: pos1 - 1,
         score: 0,
     };
 
     let player2 = Player {
-        position: pos2,
+        position: pos2 - 1,
         score: 0,
     };
 
-    let mut cache = HashMap::new();
-
     let turn = true;
 
-    let res = play(player1, player2, turn, &mut cache);
-
+    let res = play(player1, player2, turn);
+    println!("{:?}", res);
     res.0.max(res.1)
 }
 
