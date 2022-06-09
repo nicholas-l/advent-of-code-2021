@@ -37,7 +37,7 @@ pub fn star_one(input: impl BufRead) -> usize {
             let line = line.unwrap();
             let (new_value, cuboid) = line.split_once(' ').unwrap();
             let mut cuboid = cuboid.split(',').map(|s| {
-                let (_prefix, values) = s.split_once("=").unwrap();
+                let (_prefix, values) = s.split_once('=').unwrap();
                 let (lower, upper) = values.split_once("..").unwrap();
                 (
                     lower.parse::<isize>().unwrap(),
@@ -92,7 +92,7 @@ pub fn star_two(input: impl BufRead) -> usize {
             let line = line.unwrap();
             let (new_value, cuboid) = line.split_once(' ').unwrap();
             let mut cuboid = cuboid.split(',').map(|s| {
-                let (_prefix, values) = s.split_once("=").unwrap();
+                let (_prefix, values) = s.split_once('=').unwrap();
                 let (lower, upper) = values.split_once("..").unwrap();
                 (
                     lower.parse::<isize>().unwrap(),
@@ -127,11 +127,9 @@ pub fn star_two(input: impl BufRead) -> usize {
                 let additional_cores: Vec<_> = cores
                     .iter()
                     .filter_map(|(core_ins, core)| {
-                        if let Some(intersection) = cuboid.intersect(&core) {
-                            Some((!core_ins, intersection))
-                        } else {
-                            None
-                        }
+                        cuboid
+                            .intersect(core)
+                            .map(|intersection| (!core_ins, intersection))
                     })
                     .collect();
 
