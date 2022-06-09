@@ -1,4 +1,34 @@
-use std::{collections::HashSet, io::BufRead};
+use std::{
+    cmp::{max, min},
+    collections::HashSet,
+    io::BufRead,
+};
+
+#[derive(Eq, Hash, PartialEq)]
+struct Cuboid(isize, isize, isize, isize, isize, isize);
+
+impl Cuboid {
+    fn intersect(&self, other: &Cuboid) -> Option<Cuboid> {
+        let c = Cuboid(
+            max(self.0, other.0),
+            min(self.1, other.1),
+            max(self.2, other.2),
+            min(self.3, other.3),
+            max(self.4, other.4),
+            min(self.5, other.5),
+        );
+
+        if c.0 > c.1 || c.2 > c.3 || c.4 > c.5 {
+            None
+        } else {
+            Some(c)
+        }
+    }
+
+    fn volume(&self) -> isize {
+        (self.1 - self.0 + 1) * (self.3 - self.2 + 1) * (self.5 - self.4 + 1)
+    }
+}
 
 pub fn star_one(input: impl BufRead) -> usize {
     let data = input
@@ -79,36 +109,50 @@ pub fn star_two(input: impl BufRead) -> usize {
             )
         })
         .map(|(ins, cuboid)| {
-          let hs: HashSet<(isize, isize, isize)> = ((cuboid.0).0..=cuboid.0 .1).flat_map(|x| {
-            (cuboid.1 .0..=cuboid.1 .1).flat_map(move |y|
-                (cuboid.2 .0..=cuboid.2 .1).map(move |z|
-                  (x,y,z)
-                )
-              )
-            }).collect();
-            (ins, hs)
+            (
+                ins,
+                Cuboid(
+                    cuboid.0 .0,
+                    cuboid.0 .1,
+                    cuboid.1 .0,
+                    cuboid.1 .1,
+                    cuboid.2 .0,
+                    cuboid.2 .1,
+                ),
+            )
         })
-        // .filter(|(_ins, cuboid)| {
-        //     cuboid.0 .0 >= -50
-        //         && cuboid.0 .1 <= 50
-        //         && cuboid.1 .0 >= -50
-        //         && cuboid.1 .1 <= 50
-        //         && cuboid.2 .0 >= -50
-        //         && cuboid.2 .1 <= 50
-        // })
-        ;
+        .fold(
+            Vec::new(),
+            |mut cores: Vec<(bool, Cuboid)>, (ins, cuboid)| {
+                let additional_cores: Vec<_> = cores
+                    .iter()
+                    .filter_map(|(core_ins, core)| {
+                        if let Some(intersection) = cuboid.intersect(&core) {
+                            Some((!core_ins, intersection))
+                        } else {
+                            None
+                        }
+                    })
+                    .collect();
 
-    let mut on: HashSet<(isize, isize, isize)> = HashSet::new();
+                cores.extend(additional_cores);
+                if ins {
+                    cores.push((ins, cuboid));
+                }
+                cores
+            },
+        );
 
-    for (instruction, cuboid) in data {
-        if instruction {
-            on = &on | &cuboid;
-        } else {
-            on = &on - &cuboid;
-        }
-    }
-
-    on.len()
+    data.iter()
+        .map(|(ins, cuboid)| {
+            let modifer = if *ins { 1 } else { -1 };
+            let res = modifer * cuboid.volume();
+            if !ins {
+                println!("{}", res)
+            }
+            res
+        })
+        .sum::<isize>() as usize
 }
 
 #[cfg(test)]
