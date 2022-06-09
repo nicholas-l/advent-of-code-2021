@@ -442,7 +442,7 @@ mod tests {
         let (star_one, star_two, filepath) = get_day(22);
         assert_eq!(star_one(get_data(&filepath)), 587097);
 
-        assert_eq!(star_two(get_data(&filepath)), 17325);
+        assert_eq!(star_two(get_data(&filepath)), 1359673068597669);
     }
 
     #[test]
