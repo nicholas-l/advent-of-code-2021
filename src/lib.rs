@@ -25,6 +25,7 @@ mod day18;
 mod day19;
 mod day20;
 mod day21;
+mod day22;
 mod day24;
 mod day25;
 
@@ -218,6 +219,15 @@ pub fn get_day(day: usize) -> (DayFn, DayFn, PathBuf) {
                 star_one as DayFn,
                 star_two as DayFn,
                 Path::new("data").join("day21.txt"),
+            )
+        }
+
+        22 => {
+            use day22::{star_one, star_two};
+            (
+                star_one as DayFn,
+                star_two as DayFn,
+                Path::new("data").join("day22.txt"),
             )
         }
 
@@ -425,6 +435,14 @@ mod tests {
         assert_eq!(star_one(get_data(&filepath)), 893700);
 
         assert_eq!(star_two(get_data(&filepath)), 568867175661958);
+    }
+
+    #[test]
+    fn day22_complete() {
+        let (star_one, star_two, filepath) = get_day(22);
+        assert_eq!(star_one(get_data(&filepath)), 587097);
+
+        assert_eq!(star_two(get_data(&filepath)), 1359673068597669);
     }
 
     #[test]
