@@ -14,7 +14,7 @@ struct Scanner {
 fn mh_distance(p1: &Beacon, other: &Beacon) -> usize {
     p1.iter()
         .zip(other.iter())
-        .map(|(c1, c2)| (c1 - c2).abs() as usize)
+        .map(|(c1, c2)| (c1 - c2).unsigned_abs())
         .sum()
 }
 
@@ -189,13 +189,13 @@ pub fn star_two(input: impl BufRead) -> usize {
         .max_by_key(|a| {
             a[0].iter()
                 .zip(a[1].iter())
-                .map(|(c1, c2)| (c1 - c2).abs() as usize)
+                .map(|(c1, c2)| (c1 - c2).unsigned_abs())
                 .sum::<usize>()
         })
         .map(|v| {
             v[0].iter()
                 .zip(v[1].iter())
-                .map(|(c1, c2)| (c1 - c2).abs() as usize)
+                .map(|(c1, c2)| (c1 - c2).unsigned_abs())
                 .sum()
         })
         .unwrap()
