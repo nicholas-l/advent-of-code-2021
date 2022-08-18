@@ -67,9 +67,9 @@ pub fn star_one(input: impl BufRead) -> usize {
     for (instruction, cuboid) in data {
         for x in (cuboid.0).0..=cuboid.0 .1 {
             for y in cuboid.1 .0..=cuboid.1 .1 {
-                if y >= -50 && y <= 50 {
+                if (-50..=50).contains(&y) {
                     for z in cuboid.2 .0..=cuboid.2 .1 {
-                        if y >= -50 && y <= 50 {
+                        if (-50..=50).contains(&y) {
                             if instruction {
                                 on.insert((x, y, z));
                             } else {

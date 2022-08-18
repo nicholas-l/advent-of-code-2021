@@ -118,17 +118,14 @@ fn parse_packet(binary: &mut &[u8]) -> Result<Packet> {
                     parse_binary(&buf)
                 };
 
-                let sub_packets = {
-                    let mut buf = vec![0; length_of_bits];
-                    binary.read_exact(&mut buf).unwrap();
-                    let mut packets = Vec::new();
-                    let mut sub_packets_buf = &buf[..];
-                    while !sub_packets_buf.is_empty() && !buf.iter().all(|x| x == &0) {
-                        packets.push(parse_packet(&mut sub_packets_buf)?);
-                    }
-                    packets
-                };
-                sub_packets
+                let mut buf = vec![0; length_of_bits];
+                binary.read_exact(&mut buf).unwrap();
+                let mut packets = Vec::new();
+                let mut sub_packets_buf = &buf[..];
+                while !sub_packets_buf.is_empty() && !buf.iter().all(|x| x == &0) {
+                    packets.push(parse_packet(&mut sub_packets_buf)?);
+                }
+                packets
             };
             Ok(Packet::Operator {
                 version,
