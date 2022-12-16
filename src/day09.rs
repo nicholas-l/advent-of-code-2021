@@ -65,7 +65,7 @@ fn get_size(visited: &mut [Vec<bool>], i: usize, j: usize) -> usize {
                 if pos_i >= 0
                     && pos_i < visited.len() as isize
                     && pos_j >= 0
-                    && pos_j < visited[i as usize].len() as isize
+                    && pos_j < visited[i].len() as isize
                     && !visited[pos_i as usize][pos_j as usize]
                 {
                     stack.push((pos_i as usize, pos_j as usize));

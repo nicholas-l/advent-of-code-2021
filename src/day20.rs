@@ -23,7 +23,9 @@ impl Image {
             .map(|(dr, dc)| (r + dr, c + dc))
             .map(|pos| {
                 (
+                    #[allow(clippy::manual_clamp)]
                     bounds.0.max(pos.0).min(bounds.1),
+                    #[allow(clippy::manual_clamp)]
                     bounds.2.max(pos.1).min(bounds.3),
                 )
             })

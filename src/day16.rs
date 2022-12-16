@@ -35,27 +35,9 @@ impl Packet {
                 2 => packets.iter().map(|p| p.compute()).min().unwrap(),
                 3 => packets.iter().map(|p| p.compute()).max().unwrap(),
                 4 => panic!(),
-                5 => {
-                    if packets[0].compute() > packets[1].compute() {
-                        1
-                    } else {
-                        0
-                    }
-                }
-                6 => {
-                    if packets[0].compute() < packets[1].compute() {
-                        1
-                    } else {
-                        0
-                    }
-                }
-                7 => {
-                    if packets[0].compute() == packets[1].compute() {
-                        1
-                    } else {
-                        0
-                    }
-                }
+                5 => (packets[0].compute() > packets[1].compute()).into(),
+                6 => (packets[0].compute() < packets[1].compute()).into(),
+                7 => (packets[0].compute() == packets[1].compute()).into(),
                 _ => unreachable!(),
             },
         }

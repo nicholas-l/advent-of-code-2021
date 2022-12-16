@@ -45,7 +45,7 @@ pub fn star_two(mut input: impl BufRead) -> usize {
         }
         ages = new_ages;
     }
-    ages.into_iter().map(|(_k, v)| v).sum::<u128>() as usize
+    ages.into_values().sum::<u128>() as usize
 }
 
 #[cfg(test)]

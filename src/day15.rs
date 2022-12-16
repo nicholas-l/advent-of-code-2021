@@ -88,8 +88,8 @@ pub fn star_one_old(input: impl BufRead) -> usize {
                                 f64::sqrt((delta_x.pow(2) + delta_y.pow(2)) as f64) as usize + 1;
                             Node {
                                 pos: new_pos,
-                                score: score + map[pos.0 as usize][pos.1 as usize],
-                                cost: score + map[pos.0 as usize][pos.1 as usize] + distance,
+                                score: score + map[pos.0][pos.1],
+                                cost: score + map[pos.0][pos.1] + distance,
                             }
                         }),
                 );
@@ -174,7 +174,7 @@ fn map_create(input: impl BufRead) -> Vec<Vec<u8>> {
                     if i < height && j < width {
                         template[i][j]
                     } else {
-                        let inc = (i / height) + (j / width) as usize;
+                        let inc = (i / height) + (j / width);
                         let new_num = inc + template[i % height][j % width] as usize;
                         if new_num > 9 {
                             (new_num % 9) as u8
