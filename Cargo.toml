@@ -7,7 +7,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cached = "0.40.0"
+cached = "0.41.0"
 itertools = "0.10.5"
 nalgebra = "0.31.3"
 nom = "7.1.1"
