@@ -249,7 +249,7 @@ fn parse_room(
                     } else if i == 1 {
                         Position::Hallway
                     } else {
-                        Position::Room(a_chars[((j - 3) / 2)])
+                        Position::Room(a_chars[(j - 3) / 2])
                     };
                     ((i as isize, j as isize), value)
                 })
@@ -343,7 +343,7 @@ mod tests {
             positions: amphipods,
             cost: 0,
         };
-        assert_eq!(state.is_final(&map), true);
+        assert!(state.is_final(&map));
     }
 
     #[test]
@@ -361,7 +361,7 @@ mod tests {
             positions: amphipods,
             cost: 0,
         };
-        assert_eq!(state.is_final(&map), true);
+        assert!(state.is_final(&map));
     }
 
     #[test]

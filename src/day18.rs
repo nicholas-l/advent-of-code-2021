@@ -199,7 +199,7 @@ mod tests {
     #[test]
     fn test_split() {
         let mut v = SnailfishNumber::Value(10);
-        assert_eq!(v.split(), true);
+        assert!(v.split());
         assert_eq!(
             v,
             SnailfishNumber::Pair(
@@ -209,7 +209,7 @@ mod tests {
         );
 
         let mut v = SnailfishNumber::Value(11);
-        assert_eq!(v.split(), true);
+        assert!(v.split());
         assert_eq!(
             v,
             SnailfishNumber::Pair(
@@ -224,37 +224,37 @@ mod tests {
         let mut v: SnailfishNumber = "[[[[[9,8],1],2],3],4]".parse().unwrap();
         let expected: SnailfishNumber = "[[[[0,9],2],3],4]".parse().unwrap();
 
-        assert_eq!(v.explode(), true);
+        assert!(v.explode());
         assert_eq!(v, expected);
 
         let mut v: SnailfishNumber = "[7,[6,[5,[4,[3,2]]]]]".parse().unwrap();
         let expected: SnailfishNumber = "[7,[6,[5,[7,0]]]]".parse().unwrap();
 
-        assert_eq!(v.explode(), true);
+        assert!(v.explode());
         assert_eq!(v, expected);
 
         let mut v: SnailfishNumber = "[7,[6,[5,[4,[3,2]]]]]".parse().unwrap();
         let expected: SnailfishNumber = "[7,[6,[5,[7,0]]]]".parse().unwrap();
 
-        assert_eq!(v.explode(), true);
+        assert!(v.explode());
         assert_eq!(v, expected);
 
         let mut v: SnailfishNumber = "[[6,[5,[4,[3,2]]]],1]".parse().unwrap();
         let expected: SnailfishNumber = "[[6,[5,[7,0]]],3]".parse().unwrap();
 
-        assert_eq!(v.explode(), true);
+        assert!(v.explode());
         assert_eq!(v, expected);
 
         let mut v: SnailfishNumber = "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]".parse().unwrap();
         let expected: SnailfishNumber = "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]".parse().unwrap();
 
-        assert_eq!(v.explode(), true);
+        assert!(v.explode());
         assert_eq!(v, expected);
 
         let mut v: SnailfishNumber = "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]".parse().unwrap();
         let expected: SnailfishNumber = "[[3,[2,[8,0]]],[9,[5,[7,0]]]]".parse().unwrap();
 
-        assert_eq!(v.explode(), true);
+        assert!(v.explode());
         assert_eq!(v, expected);
     }
 
