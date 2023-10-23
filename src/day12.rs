@@ -23,13 +23,14 @@ pub fn star_one(input: impl BufRead) -> usize {
             let (node1, node2) = line.split_once('-').unwrap();
             (node1.to_owned(), node2.to_owned())
         })
-        .fold(HashMap::new(), |mut hm, (n1, n2)| {
-            hm.entry(n1.clone())
-                .or_insert_with(Vec::new)
-                .push(n2.clone());
-            hm.entry(n2).or_insert_with(Vec::new).push(n1);
-            hm
-        });
+        .fold(
+            HashMap::new(),
+            |mut hm: HashMap<String, Vec<String>>, (n1, n2)| {
+                hm.entry(n1.clone()).or_default().push(n2.clone());
+                hm.entry(n2).or_default().push(n1);
+                hm
+            },
+        );
 
     let mut stack = vec![("start".to_owned(), Vec::new())];
 
@@ -97,13 +98,14 @@ pub fn star_two(input: impl BufRead) -> usize {
             };
             (n1, n2)
         })
-        .fold(HashMap::new(), |mut hm, (n1, n2)| {
-            hm.entry(n1.clone())
-                .or_insert_with(Vec::new)
-                .push(n2.clone());
-            hm.entry(n2).or_insert_with(Vec::new).push(n1);
-            hm
-        });
+        .fold(
+            HashMap::new(),
+            |mut hm: HashMap<Node, Vec<Node>>, (n1, n2)| {
+                hm.entry(n1.clone()).or_default().push(n2.clone());
+                hm.entry(n2).or_default().push(n1);
+                hm
+            },
+        );
 
     let small_caves = graph.keys().filter(|n| matches!(n, Node::Lower(_)));
 

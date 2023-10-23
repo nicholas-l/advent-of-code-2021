@@ -9,21 +9,21 @@ struct Node {
 
 impl PartialOrd for Node {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match self.cost.partial_cmp(&other.cost) {
-            Some(core::cmp::Ordering::Equal) => {}
-            ord => return ord,
-        }
-        match self.score.partial_cmp(&other.score) {
-            Some(core::cmp::Ordering::Equal) => {}
-            ord => return ord,
-        }
-        self.pos.partial_cmp(&other.pos)
+        Some(self.cmp(other))
     }
 }
 
 impl Ord for Node {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other.cost.cmp(&self.cost)
+        match self.cost.cmp(&other.cost) {
+            core::cmp::Ordering::Equal => {}
+            ord => return ord,
+        }
+        match self.score.cmp(&other.score) {
+            core::cmp::Ordering::Equal => {}
+            ord => return ord,
+        }
+        self.pos.cmp(&other.pos)
     }
 }
 
