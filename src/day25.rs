@@ -50,8 +50,7 @@ pub fn star_one(input: impl BufRead) -> usize {
         let new_map = Map(map
             .0
             .iter()
-            .enumerate()
-            .map(|(_i, row)| {
+            .map(|row| {
                 row.iter()
                     .enumerate()
                     .map(|(j, x)| {

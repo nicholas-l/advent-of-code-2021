@@ -89,9 +89,8 @@ pub fn star_two(input: impl BufRead) -> usize {
 
     let mut visited: Vec<Vec<_>> = data
         .iter()
-        .enumerate()
         // Create barriers if the value is 9 (highest value)
-        .map(|(_i, row)| row.iter().map(|&x| x == 9).collect::<Vec<_>>())
+        .map(|row| row.iter().map(|&x| x == 9).collect::<Vec<_>>())
         .collect();
 
     let mut total = Vec::new();
