@@ -6,6 +6,7 @@ use nom::{
     combinator::map_res,
     sequence::{delimited, separated_pair},
     IResult,
+    Parser,
 };
 use std::{collections::VecDeque, fmt::Display, io::BufRead, ops::Add, str::FromStr};
 
@@ -100,7 +101,8 @@ impl SnailfishNumber {
 fn parse_value(input: &str) -> IResult<&str, SnailfishNumber> {
     map_res(digit1, |v: &str| {
         v.parse::<usize>().map(SnailfishNumber::Value)
-    })(input)
+    })
+    .parse(input)
 }
 
 fn parse_snailfish_pair(input: &str) -> IResult<&str, SnailfishNumber> {
@@ -109,7 +111,7 @@ fn parse_snailfish_pair(input: &str) -> IResult<&str, SnailfishNumber> {
         char(','),
         alt((parse_snailfish_pair, parse_value)),
     );
-    let (rest, numbers) = delimited(char('['), inner, char(']'))(input)?;
+    let (rest, numbers) = delimited(char('['), inner, char(']')).parse(input)?;
     let value = SnailfishNumber::Pair(Box::new(numbers.0), Box::new(numbers.1));
     Ok((rest, value))
 }
