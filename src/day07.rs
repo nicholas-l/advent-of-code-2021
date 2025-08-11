@@ -13,9 +13,7 @@ pub fn star_one(mut input: impl BufRead) -> usize {
 
     let median = data[mid];
 
-    data.iter()
-        .map(|&x| if x < median { median - x } else { x - median })
-        .sum()
+    data.iter().map(|&x| median.abs_diff(x)).sum()
 }
 
 pub fn star_two(mut input: impl BufRead) -> usize {
@@ -31,7 +29,7 @@ pub fn star_two(mut input: impl BufRead) -> usize {
     let mid: usize = data
         .iter()
         .map(|&x| {
-            let distance = if mean < x { x - mean } else { mean - x };
+            let distance = x.abs_diff(mean);
             (1..=distance).sum::<usize>()
         })
         .sum();
@@ -39,11 +37,7 @@ pub fn star_two(mut input: impl BufRead) -> usize {
     let left = data
         .iter()
         .map(|&x| {
-            let distance = if mean_left < x {
-                x - mean_left
-            } else {
-                mean_left - x
-            };
+            let distance = x.abs_diff(mean_left);
             (1..=distance).sum::<usize>()
         })
         .sum();
@@ -51,11 +45,7 @@ pub fn star_two(mut input: impl BufRead) -> usize {
     let right = data
         .iter()
         .map(|&x| {
-            let distance = if mean_right < x {
-                x - mean_right
-            } else {
-                mean_right - x
-            };
+            let distance = x.abs_diff(mean_right);
             (1..=distance).sum::<usize>()
         })
         .sum();
