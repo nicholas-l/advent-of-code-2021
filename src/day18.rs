@@ -165,7 +165,7 @@ pub fn star_two(input: impl BufRead) -> usize {
 
     numbers
         .permutations(2)
-        .map(|v| (v[0].clone() + v[1].clone()))
+        .map(|v| v[0].clone() + v[1].clone())
         .max_by_key(|v| v.magnitude())
         .unwrap()
         .magnitude()
