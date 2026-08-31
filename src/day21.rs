@@ -1,6 +1,6 @@
 use std::io::BufRead;
 
-use cached::proc_macro::cached;
+use cached::macros::cached;
 
 pub fn star_one(mut input: impl BufRead) -> usize {
     let mut data = String::new();
